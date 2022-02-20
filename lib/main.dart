@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/logo/Original.png', width: 400),
+              Image.asset('assets/logo/Original_small.png', width: 400),
               const Text(
                 'UNDER CONSTRUCTION', style: TextStyle(color: Colors.white, fontSize: 23),
               ),
