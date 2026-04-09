@@ -15,8 +15,12 @@ class _HomePageState extends State<HomePage> {
   static final Uri _contactUrl = Uri.parse('mailto:contact@dansplab.com');
 
   Future<void> _launchUrl(Uri url) async {
-    if (!await launchUrl(url)) {
-      debugPrint('Could not launch $url');
+    try {
+      if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+        debugPrint('Could not launch $url');
+      }
+    } catch (e) {
+      debugPrint('Error launching $url: $e');
     }
   }
 
@@ -169,7 +173,7 @@ class _HomePageState extends State<HomePage> {
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 620),
           child: Text(
-            'Mine Garage is featured here as one example of our work, not the brand itself. The studio helps clients turn ideas into polished apps, websites, and tailored software with a clean build process and strong visual finish.',
+            'Dansp Lab helps clients turn ideas into polished apps, websites, and tailored software with a clean build process and strong visual finish.',
             style: textTheme.bodyLarge,
           ),
         ),
