@@ -1,5 +1,6 @@
 import 'package:dansp_lab_site/home_page.dart';
 import 'package:dansp_lab_site/privacy_page.dart';
+import 'package:dansp_lab_site/privacy_clearmac_page.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
 class AppModule extends Module {
@@ -10,5 +11,6 @@ class AppModule extends Module {
   void routes(r) {
     r.child('/', child: (context) => const HomePage());
     r.child('/privacy', child: (context) => const PrivacyPage());
+    r.child('/privacy-clearmac', child: (context) => const PrivacyClearmacPage());
   }
 }
