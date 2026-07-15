@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 Color _alpha(Color color, double opacity) => color.withValues(alpha: opacity);
 
@@ -102,7 +103,43 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(height: 28),
                             _buildFeatureStrip(theme, isCompact),
                             const SizedBox(height: 28),
-                            _buildShowcaseSection(theme, isCompact, isMedium),
+                            _buildShowcaseItem(
+                              theme: theme,
+                              isCompact: isCompact,
+                              isMedium: isMedium,
+                              sectionTitle: 'Showcase Project',
+                              title: 'Mine Garage - Your smart garage',
+                              description: 'Project make in Flutter and disponable for Android and iOS. Using most modern tools and techniques.',
+                              tags: const [
+                                'Firebase', 'Git', 'Flutter', 'Riverpod', 'Provider', 
+                                'Clean Architecture', 'S.O.L.I.D', 'Unit Test', 
+                                'CI/CD', 'PushNotifiation', 'GeoLocation', 'RestAPI'
+                              ],
+                              logoPath: 'assets/logo/mine_garage.png',
+                              cardBadge: 'Selected case study',
+                              cardTitle: 'Mine Garage',
+                              cardDescription: 'Mine garage is ideal app to help you keep your vehicles always up to date, simple, purely, and modernly.',
+                              cardUrlLabel: 'minegarage.com',
+                              onTap: () => _launchUrl(_mineGarageUrl),
+                            ),
+                            const SizedBox(height: 28),
+                            _buildShowcaseItem(
+                              theme: theme,
+                              isCompact: isCompact,
+                              isMedium: isMedium,
+                              sectionTitle: '',
+                              title: 'Clear Mac - Clean your Mac',
+                              description: 'Clear Mac helps you free up disk space, remove unnecessary files, and keep your Mac organized. Whether you are a developer, student, professional, or everyday Mac user, Clear Mac makes storage management simple.',
+                              tags: const [
+                                'macOS', 'Swift', 'Flutter', 'Desktop', 'Optimization'
+                              ],
+                              logoPath: 'assets/logo/clearmac.png',
+                              cardBadge: 'Selected case study',
+                              cardTitle: 'Clear Mac',
+                              cardDescription: 'Built with privacy in mind. Your files stay on your Mac while you decide what to remove.',
+                              cardUrlLabel: 'Privacy Policy',
+                              onTap: () => Modular.to.pushNamed('/privacy-clearmac'),
+                            ),
                             const SizedBox(height: 28),
                             _buildFooter(theme, isCompact),
                           ],
@@ -363,11 +400,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildShowcaseSection(
-    ThemeData theme,
-    bool isCompact,
-    bool isMedium,
-  ) {
+  Widget _buildShowcaseItem({
+    required ThemeData theme,
+    required bool isCompact,
+    required bool isMedium,
+    required String sectionTitle,
+    required String title,
+    required String description,
+    required List<String> tags,
+    required String logoPath,
+    required String cardBadge,
+    required String cardTitle,
+    required String cardDescription,
+    required String cardUrlLabel,
+    required VoidCallback onTap,
+  }) {
     final TextTheme textTheme = theme.textTheme;
 
     return Container(
@@ -381,9 +428,9 @@ class _HomePageState extends State<HomePage> {
           ? Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildShowcaseCopy(textTheme, isCompact),
+                _buildShowcaseCopy(textTheme, isCompact, sectionTitle, title, description, tags),
                 const SizedBox(height: 24),
-                _buildShowcaseCard(textTheme, isCompact),
+                _buildShowcaseCard(textTheme, isCompact, logoPath, cardBadge, cardTitle, cardDescription, cardUrlLabel, onTap),
               ],
             )
           : Row(
@@ -391,33 +438,35 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Expanded(
                   flex: 8,
-                  child: _buildShowcaseCopy(textTheme, isCompact),
+                  child: _buildShowcaseCopy(textTheme, isCompact, sectionTitle, title, description, tags),
                 ),
                 const SizedBox(width: 24),
                 Expanded(
                   flex: 7,
-                  child: _buildShowcaseCard(textTheme, isCompact),
+                  child: _buildShowcaseCard(textTheme, isCompact, logoPath, cardBadge, cardTitle, cardDescription, cardUrlLabel, onTap),
                 ),
               ],
             ),
     );
   }
 
-  Widget _buildShowcaseCopy(TextTheme textTheme, bool isCompact) {
+  Widget _buildShowcaseCopy(TextTheme textTheme, bool isCompact, String sectionTitle, String title, String description, List<String> tags) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Showcase Project',
-          style: textTheme.bodyMedium!.copyWith(
-            color: const Color(0xFFF7C66F),
-            fontWeight: FontWeight.w700,
-            letterSpacing: 0.8,
+        if (sectionTitle.isNotEmpty) ...[
+          Text(
+            sectionTitle,
+            style: textTheme.bodyMedium!.copyWith(
+              color: const Color(0xFFF7C66F),
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.8,
+            ),
           ),
-        ),
-        const SizedBox(height: 14),
+          const SizedBox(height: 14),
+        ],
         Text(
-          'Mine Garage - Your smart garage',
+          title,
           style: textTheme.displaySmall?.copyWith(
             color: Colors.white,
             fontSize: isCompact ? 34 : 40,
@@ -425,36 +474,22 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 16),
         Text(
-          'Project make in Flutter and disponable for Android and iOS. Using most modern tools and techniques.',
+          description,
           style: textTheme.bodyLarge,
         ),
-     
         const SizedBox(height: 22),
-        const Wrap(
+        Wrap(
           spacing: 10,
           runSpacing: 10,
-          children: [
-            _TagChip(label: 'Firebase'),
-            _TagChip(label: 'Git'),
-            _TagChip(label: 'Flutter'),
-            _TagChip(label: 'Riverpod'),
-            _TagChip(label: 'Provider'),
-            _TagChip(label: 'Clean Architecture'),
-            _TagChip(label: 'S.O.L.I.D'),
-            _TagChip(label: 'Unit Test'),
-            _TagChip(label: 'CI/CD'),
-            _TagChip(label: 'PushNotifiation'),
-            _TagChip(label: 'GeoLocation'),
-            _TagChip(label: 'RestAPI'),
-          ],
+          children: tags.map((tag) => _TagChip(label: tag)).toList(),
         ),
       ],
     );
   }
 
-  Widget _buildShowcaseCard(TextTheme textTheme, bool isCompact) {
+  Widget _buildShowcaseCard(TextTheme textTheme, bool isCompact, String logoPath, String cardBadge, String cardTitle, String cardDescription, String cardUrlLabel, VoidCallback onTap) {
     return InkWell(
-      onTap: () => _launchUrl(_mineGarageUrl),
+      onTap: onTap,
       borderRadius: BorderRadius.circular(32),
       child: Container(
         padding: EdgeInsets.all(isCompact ? 20 : 24),
@@ -492,7 +527,7 @@ class _HomePageState extends State<HomePage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(22),
                   child: Image.asset(
-                    'assets/logo/mine_garage.png',
+                    logoPath,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -500,7 +535,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Selected case study',
+              cardBadge,
               style: textTheme.bodyMedium?.copyWith(
                 color: const Color(0xFFF7C66F),
                 fontWeight: FontWeight.w700,
@@ -509,7 +544,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Mine Garage',
+              cardTitle,
               style: textTheme.titleLarge?.copyWith(
                 color: Colors.white,
                 fontSize: 28,
@@ -517,7 +552,7 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Mine garage is ideal app to help you keep your vehicles always up to date, simple, purely, and modernly.',
+              cardDescription,
               style: textTheme.bodyMedium,
             ),
             const SizedBox(height: 20),
@@ -542,7 +577,7 @@ class _HomePageState extends State<HomePage> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      'minegarage.com',
+                      cardUrlLabel,
                       style: textTheme.bodyMedium?.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
